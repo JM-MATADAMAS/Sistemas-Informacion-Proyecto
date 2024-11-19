@@ -3,11 +3,6 @@
     <v-row>
       <!-- Sección de búsqueda -->
       <v-col cols="6">
-        <v-text-field>
-          <template #prepend>
-            <v-icon>mdi-magnify</v-icon>
-          </template>
-        </v-text-field>
         <!-- Viajes disponibles -->
         <v-card-title class="title-busqueda fuente" style="color: #717171;">
           viajes disponibles
@@ -16,6 +11,16 @@
         <v-container>
           <!-- Lugares de origen y destino -->
           <v-row class="fuente">
+            <v-col cols="6">
+              <v-select
+                v-model="fecha"
+                :items="municipios"
+                label="Fecha"
+                item-text="nombre"
+                item-value="nombre"
+                outlined
+              />
+            </v-col>
             <v-col cols="6">
               <v-select
                 v-model="origen"
@@ -206,6 +211,7 @@ export default {
       viajes: [],
       origen: null,
       destino: null,
+      fecha: null,
       fechaFiltro: null,
       municipios: [
         { nombre: 'DICIS' },
