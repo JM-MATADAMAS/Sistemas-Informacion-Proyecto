@@ -10,7 +10,7 @@
         </v-text-field>
         <!-- Viajes disponibles -->
         <v-card-title class="title-busqueda fuente" style="color: #717171;">
-          viajes disponibles
+          VIAJES DISPONIBLES
         </v-card-title>
         <!-- Filtros -->
         <v-container>
@@ -386,6 +386,11 @@ template {
   font-size: 1.5em;
   background-color: aliceblue;
   color: white;
+}
+.fuente {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    color: #555;
 }
 .title-busqueda {
   font-size: 2em;
