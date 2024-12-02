@@ -31,25 +31,23 @@ async function agregar_usuario(tabla,body){
     }
 }
 
-async function actualizar_usuario(tabla,body,id){
+async function actualizar_usuario(tabla, body, id) {
     try {
-        // Encriptar la contraseña
-        const contrasenaEncriptada = await bcryptUtil.encriptarContrasena(body.Usu_Password);
-        
-        // Reemplazar la contraseña en texto plano por la contraseña encriptada
-        const data = {
-            ...body,
-            Usu_Password: contrasenaEncriptada
-        };
+        const data = { ...body };
 
-        // Agregar el usuario con la contraseña encriptada
+        // Si la contraseña está presente en el cuerpo, encriptarla
+        if (body.Usu_Password) {
+            const contrasenaEncriptada = await bcryptUtil.encriptarContrasena(body.Usu_Password);
+            data.Usu_Password = contrasenaEncriptada;
+        } else {
+            delete data.Usu_Password; // Eliminar contraseña del objeto para evitar que se sobrescriba
+        }
+
         const resultado = await db.actualizar_usuario(tabla, data, id);
-        
         return resultado;
     } catch (error) {
         throw error;
     }
-    // return db.actualizar_usuario(tabla, body, id);
 }
 
 function eliminar_usuario(tabla,id){

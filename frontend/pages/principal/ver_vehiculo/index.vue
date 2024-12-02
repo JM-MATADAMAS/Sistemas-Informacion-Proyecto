@@ -12,13 +12,14 @@
       <v-sheet class="mx-auto" width="300">
         <v-card-text>
           <v-btn
-            block
+            icon
             class="mt-2 mb-3 fuente"
             elevation="2"
-            append-icon="mdi-keyboard-return"
             @click="regresar()"
           >
-            Regresar
+            <v-icon size="24" color="blue">
+              mdi-arrow-left
+            </v-icon>
           </v-btn>
           <v-text-field
             v-model="car_usu_nua"
@@ -367,5 +368,10 @@ export default {
   border: 1px solid #888;
   border-radius: 20px;
   width: 25%;
+}
+.fuente {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    color: #555;
 }
 </style>
