@@ -373,4 +373,9 @@ export default {
   border-radius: 20px;
   width: 25%;
 }
+.fuente {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    color: #555;
+}
 </style>

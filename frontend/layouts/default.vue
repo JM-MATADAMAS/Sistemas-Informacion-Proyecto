@@ -836,8 +836,9 @@ export default {
 
 <style>
 .fuente {
-  font-weight: bold;
-  font-family: Source Sans Pro;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    color: #555;
 }
 
 .bg-gradient {

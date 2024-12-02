@@ -3,19 +3,22 @@
     <v-row>
       <!-- Sección de búsqueda -->
       <v-col cols="6">
-        <v-text-field>
-          <template #prepend>
-            <v-icon>mdi-magnify</v-icon>
-          </template>
-        </v-text-field>
         <!-- Viajes disponibles -->
         <v-card-title class="title-busqueda fuente" style="color: #717171;">
-          viajes disponibles
+          VIAJES DISPONIBLES
         </v-card-title>
         <!-- Filtros -->
         <v-container>
           <!-- Lugares de origen y destino -->
           <v-row class="fuente">
+            <v-col cols="6">
+              <v-select
+                v-model="fecha"
+                :items="fechasUnicas"
+                label="Fecha"
+                outlined
+              />
+            </v-col>
             <v-col cols="6">
               <v-select
                 v-model="origen"
@@ -206,7 +209,8 @@ export default {
       viajes: [],
       origen: null,
       destino: null,
-      fechaFiltro: null,
+      fecha: null, // Fecha seleccionada
+      fechasUnicas: [], // Fechas únicas para el filtro
       municipios: [
         { nombre: 'DICIS' },
         { nombre: 'Abasolo' },
@@ -266,19 +270,12 @@ export default {
   },
   computed: {
     filteredViajes () {
-      const hoy = new Date()
-      const manana = new Date()
-      manana.setDate(manana.getDate() + 1)
-
       return this.viajes.filter((viaje) => {
-        const fechaViaje = new Date(viaje.fecha)
-        const filtroFecha = this.fechaFiltro === 'hoy'
-          ? hoy.toDateString() === fechaViaje.toDateString()
-          : this.fechaFiltro === 'mañana' ? manana.toDateString() === fechaViaje.toDateString() : true
+        const fechaViaje = new Date(viaje.fecha).toLocaleDateString()
 
         return (!this.origen || viaje.origen === this.origen) &&
               (!this.destino || viaje.destino === this.destino) &&
-              filtroFecha
+              (!this.fecha || fechaViaje === this.fecha) // Filtrar por fecha
       })
     },
     maxAsientos () {
@@ -301,12 +298,23 @@ export default {
         const response = await axios.get('http://localhost:4000/api/viajes/todos')
         const body = response.data.body.filter(item => item.via_activo === 1)
 
-        for (let i = 0; i < body.length; i++) {
-          this.viajes.push({ via_id: body[i].via_Id, nua_conductor: body[i].via_con_usu_NUA, costo: body[i].via_costo, origen: body[i].via_origen, destino: body[i].via_destino, espacio_disponible: body[i].via_esp_disp, fecha: body[i].via_fecha_hora, descripcion: body[i].via_lugares_pasada })
-        }
+        this.viajes = body.map(item => ({
+          via_id: item.via_Id,
+          nua_conductor: item.via_con_usu_NUA,
+          costo: item.via_costo,
+          origen: item.via_origen,
+          destino: item.via_destino,
+          espacio_disponible: item.via_esp_disp,
+          fecha: item.via_fecha_hora,
+          descripcion: item.via_lugares_pasada
+        }))
+
+        // Extraer fechas únicas
+        const fechas = this.viajes.map(viaje => new Date(viaje.fecha).toLocaleDateString())
+        this.fechasUnicas = [...new Set(fechas)] // Eliminar duplicados
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.log(error)
+        console.error(error)
       }
     },
     // eslint-disable-next-line require-await
@@ -386,6 +394,11 @@ template {
   font-size: 1.5em;
   background-color: aliceblue;
   color: white;
+}
+.fuente {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    color: #555;
 }
 .title-busqueda {
   font-size: 2em;
