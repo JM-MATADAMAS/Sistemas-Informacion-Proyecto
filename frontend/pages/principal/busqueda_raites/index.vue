@@ -11,7 +11,7 @@
         <v-container>
           <!-- Lugares de origen y destino -->
           <v-row class="fuente">
-            <v-col cols="6">
+            <v-col cols="12">
               <v-select
                 v-model="fecha"
                 :items="fechasUnicas"
@@ -38,31 +38,6 @@
                 item-value="nombre"
                 outlined
               />
-            </v-col>
-          </v-row>
-          <v-row justify="center">
-            <v-col cols="auto">
-              <v-btn
-                height="40"
-                min-width="100"
-                class="btn-filter fuente"
-                :color="fechaFiltro === 'hoy' ? 'primary' : undefined"
-                @click="setFechaFiltro('hoy')"
-              >
-                Hoy
-              </v-btn>
-            </v-col>
-            <v-col cols="auto">
-              <v-btn
-                :ripple="false"
-                height="40"
-                min-width="100"
-                class="btn-filter fuente"
-                :color="fechaFiltro === 'mañana' ? 'primary' : undefined"
-                @click="setFechaFiltro('mañana')"
-              >
-                Mañana
-              </v-btn>
             </v-col>
           </v-row>
         </v-container>
