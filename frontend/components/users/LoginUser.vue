@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/valid-template-root -->
 <template>
-  <v-row class="d-flex justify-center">
-    <v-card class="pa-6 rounded-xxl my-5" max-width="800">
+  <v-row class="d-flex align-center">
+    <v-card class="pa-6 rounded-xxl my-5" max-width="800" style="background-image: url('E:/PROYECTO SI/Sistemas-Informacion-Proyecto-main/frontend//Background.pn');">
       <v-avatar size="80" class="mx-auto d-flex justify-center">
         <img
           src="../../static/logo.jpg"
@@ -12,7 +12,7 @@
       <v-card-title class="headline d-flex justify-center">
         Inicia Sesion
       </v-card-title>
-      <v-sheet class="mx-auto" width="300">
+      <v-sheet class="mx-auto" width="400">
         <v-form @submit.prevent="iniciar_sesion()">
           <v-text-field
             v-model="v_nua"
@@ -34,14 +34,16 @@
             @keydown.enter="iniciarEnter()"
             @keydown="restrictSpecialCharacters"
           />
-          <v-btn class="mt-2" block @click="iniciar_sesion()">
+          <v-btn class="mt-2" color="#5164A9" block style="color: white;" @click="iniciar_sesion()">
             Iniciar Sesion
           </v-btn>
           <p v-if="showText" class="red--text text--lighten-2">
             Error al iniciar sesion!
           </p>
+          <br>
+          <br>
           <p>¿No tienes una cuenta?</p>
-          <v-btn class="mt-2" block @click="crear_cuenta()">
+          <v-btn class="mt-2" color="blue" block style="color: white;" @click="crear_cuenta()">
             Crea una aquí
           </v-btn>
         </v-form>

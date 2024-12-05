@@ -74,18 +74,28 @@
           />
           <v-row class="my-3">
             <v-col cols="6">
-              <v-btn class="mt-2" block @click="toggleUsuTipo('estudiante_comun')">
+              <v-btn
+                class="mt-2"
+                block
+                :class="{ 'selected-btn': usu_tipo === 'estudiante_comun' }"
+                @click="toggleUsuTipo('estudiante_comun')"
+              >
                 Pasajero
               </v-btn>
             </v-col>
             <v-col cols="6">
-              <v-btn class="mt-2" block @click="toggleUsuTipo('estudiante_con_vehiculo')">
+              <v-btn
+                class="mt-2"
+                block
+                :class="{ 'selected-btn': usu_tipo === 'estudiante_con_vehiculo' }"
+                @click="toggleUsuTipo('estudiante_con_vehiculo')"
+              >
                 Conductor
               </v-btn>
             </v-col>
           </v-row>
 
-          <v-btn class="mt-2" block @click="Agregar_usuario()">
+          <v-btn class="mt-2" color="#5164A9" block style="color: white;" @click="Agregar_usuario()">
             Continuar
           </v-btn>
         </v-form>
@@ -96,7 +106,6 @@
 
 <script>
 import axios from 'axios'
-
 export default {
   layout: 'login',
   data: () => ({
@@ -112,14 +121,12 @@ export default {
     necesario: [
       (value) => {
         if (value?.length > 0) { return true }
-
         return 'Rellena el campo obligatorio.'
       }
     ],
     passwords: [
       (value) => {
         if (value?.length > 7) { return true }
-
         return 'La contraseña debe contener mas de 8 caracteres.'
       }
     ]
@@ -128,7 +135,7 @@ export default {
     toggleUsuTipo (newTipo) {
       // Cambiar el valor de usu_tipo según el botón presionado
       this.usu_tipo = newTipo
-      // console.log(this.usu_tipo)
+      // console.log('Tipo de usuario seleccionado:', this.usu_tipo)
     },
     async Agregar_usuario () {
       const NUA = this.nua
@@ -197,3 +204,12 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+/* Aumenta la especificidad para sobreescribir estilos de Vuetify */
+.v-btn.selected-btn {
+  background-color: #5164A9 !important;
+  color: white !important;
+  opacity: 0.8;
+}
+</style>
