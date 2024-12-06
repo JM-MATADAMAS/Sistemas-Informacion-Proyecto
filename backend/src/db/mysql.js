@@ -68,6 +68,15 @@ function actualizar_usuario(tabla, data, Usu_NUA) {
         })
     })
 }
+function reset_password(tabla, passwordEncriptada, Usu_NUA) {
+    return new Promise((resolve, reject) => {
+        const query = `UPDATE ${tabla} SET Usu_Password = ? WHERE Usu_NUA = ?`;
+        conexion.query(query, [passwordEncriptada, Usu_NUA], (error, result) => {
+            return error ? reject(error) : resolve(result);
+        });
+    });
+}
+
 function eliminar_usuario(tabla, Usu_NUA) {
     return new Promise((resolve, reject) =>{
         conexion.query(`DELETE FROM ${tabla} WHERE Usu_NUA = ${Usu_NUA}`, (error,result)=>{
@@ -332,6 +341,7 @@ module.exports = {
     un_usuario,
     agregar_usuario,
     actualizar_usuario,
+    reset_password,
     eliminar_usuario,
     todos_vehiculo,
     un_vehiculo,

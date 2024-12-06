@@ -10,10 +10,11 @@
         >
       </v-avatar>
       <v-card-title class="headline d-flex justify-center">
-        Inicia Sesion
+        {{ showRecovery ? "Recuperar Contraseña" : "Inicia Sesión" }}
       </v-card-title>
       <v-sheet class="mx-auto" width="400">
-        <v-form @submit.prevent="iniciar_sesion()">
+        <!-- Formulario de Inicio de Sesión -->
+        <v-form v-if="!showRecovery" @submit.prevent="iniciar_sesion()">
           <v-text-field
             v-model="v_nua"
             type="text"
@@ -35,16 +36,44 @@
             @keydown="restrictSpecialCharacters"
           />
           <v-btn class="mt-2" color="#5164A9" block style="color: white;" @click="iniciar_sesion()">
-            Iniciar Sesion
+            Iniciar Sesión
           </v-btn>
           <p v-if="showText" class="red--text text--lighten-2">
-            Error al iniciar sesion!
+            Error al iniciar sesión!
           </p>
-          <br>
-          <br>
           <p>¿No tienes una cuenta?</p>
           <v-btn class="mt-2" color="blue" block style="color: white;" @click="crear_cuenta()">
             Crea una aquí
+          </v-btn>
+          <v-btn class="mt-2" block outlined color="primary" @click="showRecovery = true">
+            Recuperar Contraseña
+          </v-btn>
+        </v-form>
+        <!-- Formulario de Recuperación de Contraseña -->
+        <v-form v-else @submit.prevent="submitNewPassword()">
+          <v-text-field
+            v-model="v_nua"
+            type="text"
+            maxlength="6"
+            :rules="necesario"
+            label="NUA"
+            :error-messages="ErrorC"
+            @keydown.enter="iniciarEnter()"
+            @keydown="restrictCharacters"
+          />
+          <v-text-field
+            v-model="newPassword"
+            type="password"
+            maxlength="255"
+            :rules="passwords"
+            label="Nueva Contraseña"
+            :error-messages="ErrorSC"
+          />
+          <v-btn class="mt-2" block color="primary" @click="submitNewPassword()">
+            Guardar Contraseña
+          </v-btn>
+          <v-btn class="mt-2" block outlined color="secondary" @click="showRecovery = false">
+            Regresar
           </v-btn>
         </v-form>
       </v-sheet>
@@ -59,21 +88,21 @@ export default {
   data: () => ({
     v_nua: '',
     password: '',
+    newPassword: '',
+    showRecovery: false,
     showText: false,
     ErrorSC: '',
     ErrorC: '',
     necesario: [
       (value) => {
         if (value?.length > 0) { return true }
-
         return 'Rellena el campo obligatorio.'
       }
     ],
     passwords: [
       (value) => {
         if (value?.length > 7) { return true }
-
-        return 'La contraseña debe contener mas de 8 caracteres.'
+        return 'La contraseña debe contener más de 8 caracteres.'
       }
     ]
   }),
@@ -86,24 +115,15 @@ export default {
         })
 
         if (this.v_nua === '' || this.password === '') {
-          this.showText = true // Mostrar mensaje de error si el usuario no se encuentra
+          this.showText = true
         } else {
-          // const NUA = response.data.body[0].Usu_NUA // Obtener el NUA de la respuesta
           const NUA = this.v_nua
-
-          // Definir el tiempo de vencimiento en milisegundos (por ejemplo, 2 días)
-          const tiempoVencimiento = 2 * 60 * 60 * 1000 // 2 días
-
-          // Guardar el NUA en el almacenamiento local (localStorage) con tiempo de vencimiento
+          const tiempoVencimiento = 2 * 60 * 60 * 1000
           localStorage.setItem('NUA', NUA)
-
-          // Programar la eliminación del NUA después de que haya transcurrido el tiempo de vencimiento
           setTimeout(() => {
             localStorage.removeItem('NUA')
-            // O cualquier otra acción que desees realizar cuando el tiempo de vencimiento expire
           }, tiempoVencimiento)
 
-          // Redireccionar al usuario a la página principal
           this.$router.push({
             path: '/principal/busqueda_raites/',
             query: { NUA }
@@ -112,20 +132,32 @@ export default {
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error('Error al iniciar sesión: ', error.response)
-        // console.error('Error al iniciar sesión: ', error)
         this.showText = true
+      }
+    },
+    async submitNewPassword () {
+      try {
+        // Hacer la solicitud con el id (Usu_NUA) en la URL
+        await axios.post(`http://localhost:4000/api/usuarios/${this.v_nua}/reset_password`, {
+          Usu_Password: this.newPassword // Solo se envía la nueva contraseña
+        })
+        alert('Contraseña actualizada correctamente.')
+        this.showRecovery = false
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Error al actualizar la contraseña: ', error.response)
+        alert('Ocurrió un error al actualizar la contraseña.')
       }
     },
     crear_cuenta () {
       this.$router.push({
         path: '/reg_usuario/'
-      }) // redireccionamiento con el NUA de la cuenta iniciada
+      })
     },
     iniciarEnter () {
       this.iniciar_sesion()
     },
     restrictSpecialCharacters (event) {
-      // expresion regular que restringe caracteres especiales excepto la ñ
       const regex = /[^A-Za-z0-9ñÑ@._]/g
       if (regex.test(event.key)) {
         event.preventDefault()
@@ -135,7 +167,6 @@ export default {
       }
     },
     restrictCharacters (event) {
-      // expresion regular que restringe a solo numeros
       const regex = /[^0-9]/g
       if (regex.test(event.key) &&
           event.keyCode !== 8 &&
@@ -145,7 +176,7 @@ export default {
           event.keyCode !== 37 &&
           event.keyCode !== 39) {
         event.preventDefault()
-        this.ErrorC = 'Solo se permiten numeros'
+        this.ErrorC = 'Solo se permiten números'
       } else {
         this.ErrorC = ''
       }

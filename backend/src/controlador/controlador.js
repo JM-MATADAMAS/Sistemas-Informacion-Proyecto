@@ -6,6 +6,7 @@ const jwtUtil = require('../utilidades/jwtUtil');
 function todos_usuario(tabla){
     return db.todos_usuario(tabla)
 }
+
 function un_usuario(tabla, id){
     return db.un_usuario(tabla, id)
 }
@@ -44,6 +45,22 @@ async function actualizar_usuario(tabla, body, id) {
         }
 
         const resultado = await db.actualizar_usuario(tabla, data, id);
+        return resultado;
+    } catch (error) {
+        throw error;
+    }
+}
+async function reset_password(tabla, nuevaContrasena, id) {
+    try {
+        if (!nuevaContrasena) {
+            throw new Error('La contraseña no puede estar vacía');
+        }
+
+        // Encriptar la nueva contraseña
+        const contrasenaEncriptada = await bcryptUtil.encriptarContrasena(nuevaContrasena);
+
+        // Llamar al método de la base de datos para actualizar
+        const resultado = await db.reset_password(tabla, contrasenaEncriptada, id);
         return resultado;
     } catch (error) {
         throw error;
@@ -136,6 +153,7 @@ module.exports = {
     un_usuario,
     agregar_usuario,
     actualizar_usuario,
+    reset_password,
     eliminar_usuario,
     todos_vehiculo,
     un_vehiculo,
