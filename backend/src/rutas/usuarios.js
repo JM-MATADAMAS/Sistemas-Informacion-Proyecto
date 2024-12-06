@@ -92,35 +92,6 @@ async function eliminar_usuario(req, res, next) {
     }
 }
 
-// Restablecer contraseña de un usuario
-/*async function reset_password(req, res, next) {
-    const { Usu_NUA, Usu_NewPassword } = req.body;
-
-    if (!Usu_NUA || !Usu_NewPassword) {
-        return res.status(400).json({ mensaje: 'NUA y nueva contraseña son requeridos.' });
-    }
-
-    try {
-        // Buscar al usuario por NUA
-        const usuario = await controlador.un_usuario('usuarios', Usu_NUA);
-
-        if (!usuario || usuario.length === 0) {
-            return res.status(404).json({ mensaje: 'Usuario no encontrado.' });
-        }
-
-        // Encriptar la nueva contraseña
-        const hashedPassword = await hashContrasena(Usu_NewPassword);  // Usamos hashContrasena
-
-        // Actualizar la contraseña en la base de datos
-        await controlador.actualizar_usuario('usuarios', { Usu_Password: hashedPassword }, usuario[0].Usu_Id);
-
-        return res.status(200).json({ mensaje: 'Contraseña actualizada correctamente.' });
-    } catch (error) {
-        console.error('Error al actualizar la contraseña:', error);
-        next(error);
-    }
-} */
-
 // Resetear la contraseña del usuario
 async function reset_password(req, res, next) {
     try {
