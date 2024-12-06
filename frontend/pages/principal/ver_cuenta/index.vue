@@ -34,42 +34,30 @@
 
           <v-text-field
             v-model="nombre"
-            :rules="necesario"
+            :rules="nombres"
             maxlength="20"
             label="Nombre"
-            :readonly="isReadOnly"
-            :append-icon="icono"
             :error-messages="ErrorSC"
-            @keydown="restrictSpecialCharacters"
+            @keydown="restrictSpecialCharactersName"
           />
 
-          <v-row>
-            <v-col cols="6">
-              <v-text-field
-                v-model="ape_pat"
-                maxlength="20"
-                :rules="necesario"
-                label="Apellido Paterno"
-                class="w-50"
-                :readonly="isReadOnly"
-                :append-icon="icono"
-                :error-messages="ErrorSC"
-                @keydown="restrictSpecialCharacters"
-              />
-            </v-col>
-            <v-col cols="6">
-              <v-text-field
-                v-model="ape_mat"
-                maxlength="20"
-                label="Apellido Materno"
-                class="w-50"
-                :readonly="isReadOnly"
-                :append-icon="icono"
-                :error-messages="ErrorSC"
-                @keydown="restrictSpecialCharacters"
-              />
-            </v-col>
-          </v-row>
+          <v-text-field
+            v-model="ape_pat"
+            :rules="nombres"
+            maxlength="20"
+            label="Apellido Paterno"
+            :error-messages="ErrorSC"
+            @keydown="restrictSpecialCharactersName"
+          />
+
+          <v-text-field
+            v-model="ape_mat"
+            :rules="nombres"
+            maxlength="20"
+            label="Apellido Materno"
+            :error-messages="ErrorSC"
+            @keydown="restrictSpecialCharactersName"
+          />
 
           <v-text-field
             v-model="password"
@@ -79,8 +67,6 @@
             label="Contraseña"
             :readonly="isReadOnly"
             :append-icon="icono"
-            :error-messages="ErrorSC"
-            @keydown="restrictSpecialCharacters"
           />
 
           <!--<v-text-field
@@ -227,6 +213,17 @@ export default {
 
         return 'La contraseña debe contener mas de 8 caracteres.'
       }
+    ],
+    nombres: [
+      (value) => {
+        if (value?.length > 0) {
+          if (/^[A-Za-záéíóúÁÉÍÓÚñÑ\s]+$/.test(value)) {
+            return true
+          }
+          return 'Solo se permiten letras y espacios'
+        }
+        return 'Rellena el campo obligatorio.'
+      }
     ]
   }),
   created () {
@@ -327,10 +324,19 @@ export default {
     },
     restrictSpecialCharacters (event) {
       // expresion regular que restringe caracteres especiales excepto la ñ
-      const regex = /[^A-Za-z0-9ñÑ@._]/g
+      const regex = /[^A-Za-Ñ@._]/g
       if (regex.test(event.key)) {
         event.preventDefault()
         this.ErrorSC = 'No se permiten los caracteres especiales'
+      } else {
+        this.ErrorSC = ''
+      }
+    },
+    restrictSpecialCharactersName (event) {
+      const regex = /[^A-Za-záéíóúÁÉÍÓÚñÑ\s]/g // Solo letras y espacios
+      if (regex.test(event.key)) {
+        event.preventDefault()
+        this.ErrorSC = 'Solo se permiten letras y espacios'
       } else {
         this.ErrorSC = ''
       }
